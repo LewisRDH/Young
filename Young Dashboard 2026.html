@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Young Athora Strategy 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<!--
+Chosen Palette: "Executive Vision" - Deep Navy (#0f172a), Slate (#64748b), and White, with strategic accent colors for KPIs.
+-->
+<!--
+Application Structure Plan:
+1. Strategic Header: Sets the year and scope immediately.
+2. Strategic Pillars (KPIs): Visual definitions of the 5 goals, creating a legend for the rest of the dashboard.
+3. Investment Overview: High-level financial breakdown focused on "Investment" rather than "Cost".
+4. The Roadmap (Calendar): A timeline view tagged with KPIs, demonstrating how the plan executes the strategy.
+-->
+<!--
+Visualization & Content Choices:
+- KPI Legend: 5 Coloured Cards. Goal: Define the strategy. Viz: HTML/CSS Grid.
+- Investment Split: Doughnut Chart. Goal: Show balanced spending. Viz: Chart.js.
+- Impact Timeline: Interactive Cards. Goal: Show the flow of the year. Viz: HTML/JS Filtering.
+-->
+<!--
+CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+-->
+<style>
+       body { font-family: 'Inter', sans-serif; }
+       .chart-container { position: relative; width: 100%; max-width: 500px; height: 300px; margin: 0 auto; }
+       /* KPI Tags */
+       .tag-align { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+       .tag-represent { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+       .tag-good { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+       .tag-upskill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+       .tag-network { background-color: #ccfbf1; color: #115e59; border: 1px solid #99f6e4; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+<!-- Header -->
+<header class="bg-slate-900 text-white shadow-lg">
+<div class="container mx-auto px-6 py-8 flex justify-between items-center">
+<div>
+<h1 class="text-3xl font-bold tracking-tight">Young Athora</h1>
+<p class="text-slate-400 text-sm mt-1 uppercase tracking-wider">Strategic Roadmap 2026</p>
+</div>
+</div>
+</header>
+<main class="container mx-auto px-6 py-10">
+<!-- KPI Section -->
+<section class="mb-12">
+<h2 class="text-xl font-bold text-slate-800 mb-6 border-l-4 border-blue-600 pl-4">Strategic Pillars</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-blue-600">
+<h3 class="font-bold text-blue-900">Align Interests</h3>
+<p class="text-xs text-slate-500 mt-2">Connecting members to company vision & goals.</p>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-purple-600">
+<h3 class="font-bold text-purple-900">Represent</h3>
+<p class="text-xs text-slate-500 mt-2">Voice of young talent to management.</p>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-green-600">
+<h3 class="font-bold text-green-900">Do Good</h3>
+<p class="text-xs text-slate-500 mt-2">Social impact & volunteering.</p>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-orange-500">
+<h3 class="font-bold text-orange-900">Upskilling</h3>
+<p class="text-xs text-slate-500 mt-2">Professional development opportunities.</p>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-teal-500">
+<h3 class="font-bold text-teal-900">Network In/Out</h3>
+<p class="text-xs text-slate-500 mt-2">Internal bonding & industry connection.</p>
+</div>
+</div>
+</section>
+<!-- Dashboard Top Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+<!-- Financial Overview -->
+<div class="bg-white p-6 rounded-xl shadow-sm lg:col-span-1">
+<h3 class="text-lg font-bold text-slate-800 mb-4">Investment Distribution</h3>
+<div class="chart-container">
+<canvas id="investmentChart"></canvas>
+</div>
+<div class="mt-4 text-center">
+<p class="text-3xl font-bold text-slate-900">€20k</p>
+<p class="text-xs text-slate-500 uppercase tracking-wide">Total Annual Investment</p>
+</div>
+</div>
+<!-- Program Highlights -->
+<div class="bg-white p-6 rounded-xl shadow-sm lg:col-span-2 flex flex-col justify-between">
+<div>
+<h3 class="text-lg font-bold text-slate-800 mb-6">Program Highlights</h3>
+<div class="grid grid-cols-2 gap-6">
+<div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+<span class="text-2xl">🌍</span>
+<h4 class="font-bold text-slate-800 mt-2">International Integration</h4>
+<p class="text-sm text-slate-600 mt-1">Strategic site visits to <strong>Belgium</strong> (Q2) and <strong>Italy</strong> (Q3) to foster cross-border collaboration.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+<span class="text-2xl">🤝</span>
+<h4 class="font-bold text-slate-800 mt-2">Leadership Access</h4>
+<p class="text-sm text-slate-600 mt-1">Direct feedback loops via "Lunch with Leadership" and structured representation events.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+<span class="text-2xl">🌱</span>
+<h4 class="font-bold text-slate-800 mt-2">Community Impact</h4>
+<p class="text-sm text-slate-600 mt-1">Hands-on engagement through local garden projects and Movember awareness.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+<span class="text-2xl">🚀</span>
+<h4 class="font-bold text-slate-800 mt-2">Talent Retention</h4>
+<p class="text-sm text-slate-600 mt-1">High-engagement calendar designed to build belonging and professional pride.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- The Roadmap -->
+<section>
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+<h2 class="text-xl font-bold text-slate-800 border-l-4 border-slate-800 pl-4">2026 Roadmap</h2>
+<!-- Filters -->
+<div class="flex space-x-2 mt-4 md:mt-0" id="filters">
+<button class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-800 text-white" onclick="filterEvents('all')">All</button>
+<button class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300" onclick="filterEvents('major')">Major Events</button>
+<button class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300" onclick="filterEvents('trip')">Int'l Visits</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="event-grid">
+<!-- JS will populate this -->
+</div>
+</section>
+</main>
+<script>
+       // Data Source
+       const events = [
+           // Q1
+           {
+               month: 'February', title: 'Oud en Nieuw Kick-off',
+               type: 'major', category: 'Major Impact',
+               tags: ['network', 'align'],
+               desc: 'Internal speed networking mixer to align new and existing members.'
+           },
+           {
+               month: 'March', title: 'Community Garden Project',
+               type: 'major', category: 'Major Impact',
+               tags: ['good', 'network'],
+               desc: 'Volunteering day at local sustainable garden + team lunch.'
+           },
+           {
+               month: 'March', title: 'Walk & Talk: Peer Support',
+               type: 'minor', category: 'Minor Connect',
+               tags: ['network'],
+               desc: 'Low-threshold peer mentoring walk.'
+           },
+           // Q2
+           {
+               month: 'April', title: 'Padel Tournament',
+               type: 'major', category: 'Major Impact',
+               tags: ['network', 'good'],
+               desc: 'Active networking event promoting health and competition.'
+           },
+           {
+               month: 'May', title: '🇧🇪 Athora Belgium Exchange',
+               type: 'trip', category: 'International Visit',
+               tags: ['align', 'network', 'upskill'],
+               desc: 'Cross-border office visit to Brussels. Process sharing & networking.'
+           },
+           {
+               month: 'June', title: 'Lunch with Leadership',
+               type: 'minor', category: 'Minor Connect',
+               tags: ['represent', 'align'],
+               desc: 'Roundtable Q&A with Senior Management.'
+           },
+           {
+               month: 'June', title: 'Canal Boat Team Event',
+               type: 'major', category: 'Major Impact',
+               tags: ['network'],
+               desc: 'Mid-year team bonding and celebration.'
+           },
+           // Q3
+           {
+               month: 'July', title: 'Beach Volleyball',
+               type: 'major', category: 'Major Impact',
+               tags: ['network', 'good'],
+               desc: 'Summer social to maintain engagement during holiday season.'
+           },
+           {
+               month: 'August', title: 'City Strategy Hunt',
+               type: 'major', category: 'Major Impact',
+               tags: ['network'],
+               desc: 'Team-based problem solving scavenger hunt.'
+           },
+           {
+               month: 'September', title: '🇮🇹 Athora Italy Summit',
+               type: 'trip', category: 'International Visit',
+               tags: ['align', 'upskill', 'network'],
+               desc: '3-Day immersive visit to Genoa HQ. Workshops & cultural exchange.'
+           },
+           // Q4
+           {
+               month: 'October', title: 'Skill Workshop: Personal Brand',
+               type: 'major', category: 'Major Impact',
+               tags: ['upskill', 'network'],
+               desc: 'Interactive session on career growth followed by drinks.'
+           },
+           {
+               month: 'November', title: 'Movember Awareness',
+               type: 'minor', category: 'Minor Connect',
+               tags: ['good'],
+               desc: 'Awareness walk and fundraising initiative.'
+           },
+           {
+               month: 'November', title: 'Culture Night: Museum',
+               type: 'major', category: 'Major Impact',
+               tags: ['upskill', 'network'],
+               desc: 'Cultural broadening evening at Fabrique des Lumières.'
+           },
+           {
+               month: 'December', title: 'End of Year Gala',
+               type: 'major', category: 'Major Impact',
+               tags: ['network', 'align'],
+               desc: 'Formal closing dinner celebrating the year\'s achievements.'
+           }
+       ];
+       // Tag Label Map
+       const tagLabels = {
+           'align': 'Align Interests',
+           'represent': 'Represent',
+           'good': 'Do Good',
+           'upskill': 'Upskilling',
+           'network': 'Network In/Out'
+       };
+       // Render Functions
+       function renderEvents(filter = 'all') {
+           const container = document.getElementById('event-grid');
+           container.innerHTML = '';
+           const filtered = events.filter(e => filter === 'all' || e.type === filter);
+           filtered.forEach(event => {
+               let tagsHtml = '';
+               event.tags.forEach(tag => {
+                   tagsHtml += `<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full mr-1 mb-1 inline-block tag-${tag}">${tagLabels[tag]}</span>`;
+               });
+               const card = `
+<div class="bg-white rounded-lg shadow-sm border border-slate-100 p-5 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-wide">${event.month}</span>
+<span class="text-[10px] font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded">${event.category}</span>
+</div>
+<h4 class="font-bold text-slate-800 text-lg mb-1">${event.title}</h4>
+<p class="text-sm text-slate-500 mb-4 h-10 overflow-hidden">${event.desc}</p>
+<div class="flex flex-wrap mt-auto">
+                           ${tagsHtml}
+</div>
+</div>
+               `;
+               container.innerHTML += card;
+           });
+       }
+       function filterEvents(type) {
+           renderEvents(type);
+           // Update buttons
+           const buttons = document.querySelectorAll('#filters button');
+           buttons.forEach(btn => {
+               btn.classList.remove('bg-slate-800', 'text-white');
+               btn.classList.add('bg-slate-200', 'text-slate-600');
+           });
+           // Highlight active (simple logic based on text content for demo)
+           const activeBtn = Array.from(buttons).find(b => b.onclick.toString().includes(type));
+           if(activeBtn) {
+               activeBtn.classList.remove('bg-slate-200', 'text-slate-600');
+               activeBtn.classList.add('bg-slate-800', 'text-white');
+           }
+       }
+       // Chart
+       function initChart() {
+           const ctx = document.getElementById('investmentChart').getContext('2d');
+           Chart.defaults.font.family = "'Inter', sans-serif";
+           new Chart(ctx, {
+               type: 'doughnut',
+               data: {
+                   labels: ['International Visits', 'Major Impact Events', 'Minor Connect', 'Operational Buffer'],
+                   datasets: [{
+                       data: [13500, 5100, 350, 1050],
+                       backgroundColor: ['#0f172a', '#3b82f6', '#94a3b8', '#e2e8f0'],
+                       borderWidth: 0,
+                       hoverOffset: 4
+                   }]
+               },
+               options: {
+                   animation: false, // Disabled for static full-page screenshots
+                   responsive: true,
+                   maintainAspectRatio: false,
+                   cutout: '75%',
+                   plugins: {
+                       legend: {
+                           position: 'bottom',
+                           labels: {
+                               usePointStyle: true,
+                               padding: 20,
+                               font: { size: 11 }
+                           }
+                       }
+                   }
+               }
+           });
+       }
+       // Init
+       document.addEventListener('DOMContentLoaded', () => {
+           renderEvents();
+           initChart();
+       });
+</script>
+</body>
+</html>
