@@ -7,45 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!--
-Chosen Palette: "Executive Vision" - Deep Navy (#0f172a), Slate (#64748b), and White.
--->
-    <!--
-Application Structure Plan: 
-1. Bilingual Support: Added a translation dictionary and data structure to support EN/NL toggling.
-2. Toggle Logic: Simple JS function updates the DOM text, re-renders the grid, and updates the chart.
-3. Structure: Identical to the previous executive version (Header, KPI Legend, Investment Chart, Roadmap).
--->
-    <!--
-CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
--->
     <style>
         body { font-family: 'Inter', sans-serif; }
         .chart-container { position: relative; width: 100%; max-width: 500px; height: 300px; margin: 0 auto; }
         
-        /* KPI Tags */
-        .tag-align { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-        .tag-represent { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
-        .tag-good { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .tag-upskill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
-        .tag-network { background-color: #ccfbf1; color: #115e59; border: 1px solid #99f6e4; }
+        /* KPI Tags & Interactive States */
+        .kpi-card { cursor: pointer; transition: all 0.2s ease; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .kpi-card.active { ring: 2px solid #2563eb; transform: scale(1.02); }
+
+        /* Tag Colors */
+        .tag-silos { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; } /* Blue */
+        .tag-represent { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; } /* Purple */
+        .tag-good { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; } /* Green */
+        .tag-upskill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; } /* Orange */
+        .tag-network { background-color: #ccfbf1; color: #115e59; border: 1px solid #99f6e4; } /* Teal */
 
         /* Toggle Switch Styling */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #68D391;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #3b82f6;
-        }
-        .toggle-checkbox:checked + .toggle-label:before {
-            transform: translateX(100%);
-        }
+        .toggle-checkbox:checked { right: 0; border-color: #68D391; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label:before { transform: translateX(100%); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 
-    <!-- Header -->
     <header class="bg-slate-900 text-white shadow-lg">
         <div class="container mx-auto px-6 py-8 flex justify-between items-center">
             <div>
@@ -53,7 +38,6 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
                 <p id="subtitle" class="text-slate-400 text-sm mt-1 uppercase tracking-wider">Strategic Roadmap 2026</p>
             </div>
             
-            <!-- Language Toggle -->
             <div class="flex items-center">
                 <span class="mr-2 text-sm font-semibold text-slate-400">EN</span>
                 <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
@@ -67,49 +51,49 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
 
     <main class="container mx-auto px-6 py-10">
 
-        <!-- KPI Section -->
         <section class="mb-12">
-            <h2 id="kpi-title" class="text-xl font-bold text-slate-800 mb-6 border-l-4 border-blue-600 pl-4">Strategic Pillars</h2>
+            <div class="flex justify-between items-end mb-6">
+                <h2 id="kpi-title" class="text-xl font-bold text-slate-800 border-l-4 border-blue-600 pl-4">Strategic Pillars</h2>
+                <span class="text-xs text-slate-400 italic hidden md:block">Click a pillar to highlight events</span>
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-blue-600">
-                    <h3 id="kpi-align-title" class="font-bold text-blue-900">Align Interests</h3>
-                    <p id="kpi-align-desc" class="text-xs text-slate-500 mt-2">Connecting members to company vision & goals.</p>
+                <div class="kpi-card bg-white p-4 rounded-lg shadow-sm border-t-4 border-blue-600" onclick="filterByTag('silos', this)">
+                    <h3 id="kpi-align-title" class="font-bold text-blue-900">Breaking Silos</h3>
+                    <p id="kpi-align-desc" class="text-xs text-slate-500 mt-2">Connecting members across depts & goals.</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-purple-600">
+                <div class="kpi-card bg-white p-4 rounded-lg shadow-sm border-t-4 border-purple-600" onclick="filterByTag('represent', this)">
                     <h3 id="kpi-rep-title" class="font-bold text-purple-900">Represent</h3>
                     <p id="kpi-rep-desc" class="text-xs text-slate-500 mt-2">Voice of young talent to management.</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-green-600">
+                <div class="kpi-card bg-white p-4 rounded-lg shadow-sm border-t-4 border-green-600" onclick="filterByTag('good', this)">
                     <h3 id="kpi-good-title" class="font-bold text-green-900">Do Good</h3>
                     <p id="kpi-good-desc" class="text-xs text-slate-500 mt-2">Social impact & volunteering.</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-orange-500">
+                <div class="kpi-card bg-white p-4 rounded-lg shadow-sm border-t-4 border-orange-500" onclick="filterByTag('upskill', this)">
                     <h3 id="kpi-up-title" class="font-bold text-orange-900">Upskilling</h3>
                     <p id="kpi-up-desc" class="text-xs text-slate-500 mt-2">Professional development opportunities.</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-teal-500">
+                <div class="kpi-card bg-white p-4 rounded-lg shadow-sm border-t-4 border-teal-500" onclick="filterByTag('network', this)">
                     <h3 id="kpi-net-title" class="font-bold text-teal-900">Network In/Out</h3>
                     <p id="kpi-net-desc" class="text-xs text-slate-500 mt-2">Internal bonding & industry connection.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Dashboard Top Row -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             
-            <!-- Financial Overview -->
             <div class="bg-white p-6 rounded-xl shadow-sm lg:col-span-1">
                 <h3 id="invest-title" class="text-lg font-bold text-slate-800 mb-4">Investment Distribution</h3>
                 <div class="chart-container">
                     <canvas id="investmentChart"></canvas>
                 </div>
                 <div class="mt-4 text-center">
-                    <p class="text-3xl font-bold text-slate-900">€20k</p>
+                    <p class="text-3xl font-bold text-slate-900">€35.4k</p>
                     <p id="invest-sub" class="text-xs text-slate-500 uppercase tracking-wide">Total Annual Investment</p>
                 </div>
             </div>
 
-            <!-- Program Highlights -->
             <div class="bg-white p-6 rounded-xl shadow-sm lg:col-span-2 flex flex-col justify-between">
                 <div>
                     <h3 id="high-title" class="text-lg font-bold text-slate-800 mb-6">Program Highlights</h3>
@@ -117,17 +101,17 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
                             <span class="text-2xl">🌍</span>
                             <h4 id="hl-1-title" class="font-bold text-slate-800 mt-2">International Integration</h4>
-                            <p id="hl-1-desc" class="text-sm text-slate-600 mt-1">Strategic site visits to <strong>Belgium</strong> (Q2) and <strong>Italy</strong> (Q3) to foster cross-border collaboration.</p>
+                            <p id="hl-1-desc" class="text-sm text-slate-600 mt-1">Strategic site visits to <strong>Belgium</strong> (Oct) and <strong>Italy</strong> (June) to foster cross-border collaboration.</p>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                            <span class="text-2xl">🤝</span>
-                            <h4 id="hl-2-title" class="font-bold text-slate-800 mt-2">Leadership Access</h4>
-                            <p id="hl-2-desc" class="text-sm text-slate-600 mt-1">Direct feedback loops via "Lunch with Leadership" and structured representation events.</p>
+                            <span class="text-2xl">🏛️</span>
+                            <h4 id="hl-2-title" class="font-bold text-slate-800 mt-2">External Ecosystem</h4>
+                            <p id="hl-2-desc" class="text-sm text-slate-600 mt-1">Collaborating with Dutch study associations & financial firms (APG, DNB, AON) to attract talent & upskill.</p>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
                             <span class="text-2xl">🌱</span>
                             <h4 id="hl-3-title" class="font-bold text-slate-800 mt-2">Community Impact</h4>
-                            <p id="hl-3-desc" class="text-sm text-slate-600 mt-1">Hands-on engagement through local garden projects and Movember awareness.</p>
+                            <p id="hl-3-desc" class="text-sm text-slate-600 mt-1">Hands-on engagement through <strong>Community Gardening</strong> and <strong>Cleaning Canals</strong> in Amsterdam.</p>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
                             <span class="text-2xl">🚀</span>
@@ -139,12 +123,10 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             </div>
         </div>
 
-        <!-- The Roadmap -->
         <section>
             <div class="flex flex-col md:flex-row justify-between items-center mb-6">
                 <h2 id="roadmap-title" class="text-xl font-bold text-slate-800 border-l-4 border-slate-800 pl-4">2026 Roadmap</h2>
                 
-                <!-- Filters -->
                 <div class="flex space-x-2 mt-4 md:mt-0" id="filters">
                     <button id="btn-all" class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-800 text-white" onclick="filterEvents('all')">All</button>
                     <button id="btn-major" class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300" onclick="filterEvents('major')">Major Events</button>
@@ -153,8 +135,7 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="event-grid">
-                <!-- JS will populate this -->
-            </div>
+                </div>
         </section>
 
     </main>
@@ -166,8 +147,8 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             en: {
                 subtitle: "Strategic Roadmap 2026",
                 kpi_title: "Strategic Pillars",
-                kpi_align_title: "Align Interests",
-                kpi_align_desc: "Connecting members to company vision & goals.",
+                kpi_align_title: "Breaking Silos",
+                kpi_align_desc: "Connecting members across depts & goals.",
                 kpi_rep_title: "Represent",
                 kpi_rep_desc: "Voice of young talent to management.",
                 kpi_good_title: "Do Good",
@@ -180,20 +161,20 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
                 invest_sub: "Total Annual Investment",
                 high_title: "Program Highlights",
                 hl_1_title: "International Integration",
-                hl_1_desc: "Strategic site visits to <strong>Belgium</strong> (Q2) and <strong>Italy</strong> (Q3) to foster cross-border collaboration.",
-                hl_2_title: "Leadership Access",
-                hl_2_desc: "Direct feedback loops via \"Lunch with Leadership\" and structured representation events.",
+                hl_1_desc: "Strategic site visits to <strong>Belgium</strong> (Oct) and <strong>Italy</strong> (June) to foster cross-border collaboration.",
+                hl_2_title: "External Ecosystem",
+                hl_2_desc: "Collaborating with Dutch study associations & financial firms (APG, DNB, AON) to attract talent & upskill.",
                 hl_3_title: "Community Impact",
-                hl_3_desc: "Hands-on engagement through local garden projects and Movember awareness.",
+                hl_3_desc: "Hands-on engagement through <strong>Community Gardening</strong> and <strong>Cleaning Canals</strong> in Amsterdam.",
                 hl_4_title: "Talent Retention",
                 hl_4_desc: "High-engagement calendar designed to build belonging and professional pride.",
                 roadmap_title: "2026 Roadmap",
                 btn_all: "All",
                 btn_major: "Major Events",
                 btn_trip: "Int'l Visits",
-                chart_labels: ['International Visits', 'Major Impact Events', 'Minor Connect', 'Operational Buffer'],
+                chart_labels: ['International Visits', 'Major Impact Events', 'Network & Dev', 'Operational'],
                 tags: {
-                    'align': 'Align Interests',
+                    'silos': 'Breaking Silos',
                     'represent': 'Represent',
                     'good': 'Do Good',
                     'upskill': 'Upskilling',
@@ -203,8 +184,8 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             nl: {
                 subtitle: "Strategische Roadmap 2026",
                 kpi_title: "Strategische Pijlers",
-                kpi_align_title: "Belangen Afstemmen",
-                kpi_align_desc: "Verbinding van leden met bedrijfsvisie & doelen.",
+                kpi_align_title: "Silo's Doorbreken",
+                kpi_align_desc: "Verbinding van leden over afdelingen heen.",
                 kpi_rep_title: "Vertegenwoordigen",
                 kpi_rep_desc: "De stem van jong talent naar het management.",
                 kpi_good_title: "Goed Doen",
@@ -217,20 +198,20 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
                 invest_sub: "Totale Jaarlijkse Investering",
                 high_title: "Programma Hoogtepunten",
                 hl_1_title: "Internationale Integratie",
-                hl_1_desc: "Strategische werkbezoeken aan <strong>België</strong> (Q2) en <strong>Italië</strong> (Q3) voor grensoverschrijdende samenwerking.",
-                hl_2_title: "Toegang tot Leiderschap",
-                hl_2_desc: "Directe feedbackloops via \"Lunch met Leiderschap\" en vertegenwoordigingsevents.",
+                hl_1_desc: "Strategische werkbezoeken aan <strong>België</strong> (Okt) en <strong>Italië</strong> (Juni) voor samenwerking.",
+                hl_2_title: "Extern Ecosysteem",
+                hl_2_desc: "Samenwerken met studieverenigingen & financiële bedrijven (APG, DNB, AON) voor talent & groei.",
                 hl_3_title: "Maatschappelijke Impact",
-                hl_3_desc: "Betrokkenheid via lokale buurtprojecten en Movember bewustwording.",
+                hl_3_desc: "Betrokkenheid via <strong>Buurttuinieren</strong> en <strong>Grachten Schoonmaken</strong> in Amsterdam.",
                 hl_4_title: "Talentbehoud",
                 hl_4_desc: "Een kalender gericht op betrokkenheid en professionele trots.",
                 roadmap_title: "Roadmap 2026",
                 btn_all: "Alles",
                 btn_major: "Grote Evenementen",
                 btn_trip: "Int'l Bezoeken",
-                chart_labels: ['Internationale Bezoeken', 'Grote Impact Events', 'Kleine Connecties', 'Operationele Buffer'],
+                chart_labels: ['Internationale Bezoeken', 'Grote Impact Events', 'Netwerk & Ontwikkeling', 'Operationeel'],
                 tags: {
-                    'align': 'Belangen Afstemmen',
+                    'silos': "Silo's Doorbreken",
                     'represent': 'Vertegenwoordigen',
                     'good': 'Goed Doen',
                     'upskill': 'Ontwikkeling',
@@ -243,112 +224,148 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             // Q1
             { 
                 month: { en: 'February', nl: 'Februari' }, 
-                title: { en: 'Oud en Nieuw Kick-off', nl: 'Oud en Nieuw Kick-off' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['network', 'align'],
-                desc: { en: 'Internal speed networking mixer to align new and existing members.', nl: 'Interne speeddate mixer om nieuwe en bestaande leden te verbinden.' }
+                title: { en: 'Jeu de Boules', nl: 'Jeu de Boules' },
+                type: 'major', 
+                tags: ['network'], cost: 2000,
+                desc: { en: 'Team bonding activity.', nl: 'Team bonding activiteit.' }
             },
             { 
                 month: { en: 'March', nl: 'Maart' }, 
-                title: { en: 'Community Garden Project', nl: 'Buurttuin Project' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['good', 'network'],
-                desc: { en: 'Volunteering day at local sustainable garden + team lunch.', nl: 'Vrijwilligersdag bij lokale duurzame tuin + teamlunch.' }
-            },
-            { 
-                month: { en: 'March', nl: 'Maart' }, 
-                title: { en: 'Walk & Talk: Peer Support', nl: 'Walk & Talk: Peer Support' },
-                type: 'minor', category: { en: 'Minor Connect', nl: 'Kleine Connectie' },
-                tags: ['network'],
-                desc: { en: 'Low-threshold peer mentoring walk.', nl: 'Laagdrempelige mentorwandeling.' }
+                title: { en: 'Visit DMFCO Asset Mgmt', nl: 'Bezoek DMFCO Asset Mgmt' },
+                type: 'minor', 
+                tags: ['network', 'upskill'], cost: 500,
+                desc: { en: 'External visit to broaden industry knowledge.', nl: 'Extern bezoek om industriele kennis te verbreden.' }
             },
 
             // Q2
             { 
                 month: { en: 'April', nl: 'April' }, 
-                title: { en: 'Padel Tournament', nl: 'Padel Toernooi' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['network', 'good'],
-                desc: { en: 'Active networking event promoting health and competition.', nl: 'Actief netwerkevent voor gezondheid en competitie.' }
+                title: { en: 'Lunch & Learn: Eva vd Horst', nl: 'Lunch & Learn: Eva vd Horst' },
+                type: 'minor', 
+                tags: ['silos', 'upskill'], cost: 375,
+                desc: { en: 'Internal knowledge sharing session.', nl: 'Interne kennisdelingssessie.' }
+            },
+            {
+                month: { en: 'April', nl: 'April' },
+                title: { en: 'Visit VSAE Students', nl: 'Bezoek VSAE Studenten' },
+                type: 'minor',
+                tags: ['network', 'upskill'], cost: 0,
+                desc: { en: 'Hosting the VSAE student association at our office.', nl: 'VSAE studievereniging op bezoek op ons kantoor.' }
             },
             { 
                 month: { en: 'May', nl: 'Mei' }, 
-                title: { en: '🇧🇪 Athora Belgium Exchange', nl: '🇧🇪 Athora België Uitwisseling' },
-                type: 'trip', category: { en: 'International Visit', nl: 'Internationaal Bezoek' },
-                tags: ['align', 'network', 'upskill'],
-                desc: { en: 'Cross-border office visit to Brussels. Process sharing & networking.', nl: 'Bezoek aan kantoor Brussel. Kennisdeling & netwerken.' }
+                title: { en: 'Visit DNB', nl: 'Bezoek DNB' },
+                type: 'minor', 
+                tags: ['network', 'upskill'], cost: 500,
+                desc: { en: 'Regulatory body visit and networking.', nl: 'Bezoek aan toezichthouder en netwerken.' }
+            },
+            { 
+                month: { en: 'May', nl: 'Mei' }, 
+                title: { en: 'Soft Skill Workshop', nl: 'Soft Skill Workshop' },
+                type: 'minor', 
+                tags: ['upskill'], cost: 500,
+                desc: { en: 'Personal leadership training.', nl: 'Training persoonlijk leiderschap.' }
+            },
+            { 
+                month: { en: 'May', nl: 'Mei' }, 
+                title: { en: 'City Strategy Hunt', nl: 'Stad Strategie Speurtocht' },
+                type: 'major', 
+                tags: ['network', 'silos'], cost: 500,
+                desc: { en: 'Strategic team building in the city.', nl: 'Strategische teambuilding in de stad.' }
             },
             { 
                 month: { en: 'June', nl: 'Juni' }, 
-                title: { en: 'Lunch with Leadership', nl: 'Lunch met Leiderschap' },
-                type: 'minor', category: { en: 'Minor Connect', nl: 'Kleine Connectie' },
-                tags: ['represent', 'align'],
-                desc: { en: 'Roundtable Q&A with Senior Management.', nl: 'Rondetafel Q&A met Senior Management.' }
+                title: { en: 'Workers Union Lunch', nl: 'Vakbond Learning Lunch' },
+                type: 'minor', 
+                tags: ['represent', 'upskill'], cost: 375,
+                desc: { en: 'Understanding labor relations and rights.', nl: 'Begrip van arbeidsverhoudingen en rechten.' }
+            },
+            {
+                month: { en: 'June', nl: 'Juni' },
+                title: { en: 'Community Gardening', nl: 'Buurttuinieren' },
+                type: 'major',
+                tags: ['good', 'network'], cost: 300,
+                desc: { en: 'Volunteering day to help at a local community garden.', nl: 'Vrijwilligersdag om te helpen bij een lokale buurttuin.' }
             },
             { 
                 month: { en: 'June', nl: 'Juni' }, 
-                title: { en: 'Canal Boat Team Event', nl: 'Grachten Boottocht' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['network'],
-                desc: { en: 'Mid-year team bonding and celebration.', nl: 'Team bonding viering halverwege het jaar.' }
+                title: { en: '🇮🇹 Study Trip Athora Italy', nl: '🇮🇹 Studiereis Athora Italië' },
+                type: 'trip', 
+                tags: ['silos', 'network', 'upskill'], cost: 15000,
+                desc: { en: 'International exchange and workshops in Genoa.', nl: 'Internationale uitwisseling en workshops in Genua.' }
             },
 
             // Q3
             { 
                 month: { en: 'July', nl: 'Juli' }, 
-                title: { en: 'Beach Volleyball', nl: 'Beachvolleybal' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['network', 'good'],
-                desc: { en: 'Summer social to maintain engagement during holiday season.', nl: 'Zomerse borrel om betrokkenheid te houden tijdens vakanties.' }
+                title: { en: 'Pitch & Put Golf', nl: 'Pitch & Put Golf' },
+                type: 'major', 
+                tags: ['network'], cost: 2000,
+                desc: { en: 'Summer social outdoor activity.', nl: 'Zomerse sociale buitenactiviteit.' }
             },
             { 
                 month: { en: 'August', nl: 'Augustus' }, 
-                title: { en: 'City Strategy Hunt', nl: 'Stad Strategie Speurtocht' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['network'],
-                desc: { en: 'Team-based problem solving scavenger hunt.', nl: 'Probleemoplossende speurtocht in teams.' }
+                title: { en: 'Amsterdam Canal Boat', nl: 'Boottocht Amsterdam' },
+                type: 'major', 
+                tags: ['network', 'silos'], cost: 2500,
+                desc: { en: 'Classic canal cruise team event.', nl: 'Klassieke rondvaart team event.' }
+            },
+            {
+                month: { en: 'September', nl: 'September' },
+                title: { en: 'Cleaning Canals Amsterdam', nl: 'Grachten Schoonmaken' },
+                type: 'major',
+                tags: ['good', 'network'], cost: 300,
+                desc: { en: 'Plastic fishing and cleaning the canals.', nl: 'Plastic vissen en de grachten schoonmaken.' }
             },
             { 
                 month: { en: 'September', nl: 'September' }, 
-                title: { en: '🇮🇹 Athora Italy Summit', nl: '🇮🇹 Athora Italië Top' },
-                type: 'trip', category: { en: 'International Visit', nl: 'Internationaal Bezoek' },
-                tags: ['align', 'upskill', 'network'],
-                desc: { en: '3-Day immersive visit to Genoa HQ. Workshops & cultural exchange.', nl: '3-daags werkbezoek aan hoofdkantoor Genua. Workshops & cultuur.' }
+                title: { en: 'Lunch & Learn: Jan-Hendrik', nl: 'Lunch & Learn: Jan-Hendrik' },
+                type: 'minor', 
+                tags: ['upskill', 'silos'], cost: 375,
+                desc: { en: 'Senior leadership insight session.', nl: 'Inzichtsessie met senior leiderschap.' }
+            },
+            { 
+                month: { en: 'September', nl: 'September' }, 
+                title: { en: 'Visit APG', nl: 'Bezoek APG' },
+                type: 'minor', 
+                tags: ['network', 'upskill'], cost: 350,
+                desc: { en: 'Pension provider industry visit.', nl: 'Bezoek aan pensioenuitvoerder.' }
             },
 
             // Q4
             { 
                 month: { en: 'October', nl: 'Oktober' }, 
-                title: { en: 'Skill Workshop: Personal Brand', nl: 'Workshop: Personal Brand' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['upskill', 'network'],
-                desc: { en: 'Interactive session on career growth followed by drinks.', nl: 'Interactieve sessie over loopbaangroei gevolgd door borrel.' }
+                title: { en: '🇧🇪 Visit Athora Belgium', nl: '🇧🇪 Bezoek Athora België' },
+                type: 'trip', 
+                tags: ['silos', 'network'], cost: 5000,
+                desc: { en: 'Cross-border collaboration trip.', nl: 'Grensoverschrijdende samenwerkingsreis.' }
+            },
+            { 
+                month: { en: 'October', nl: 'Oktober' }, 
+                title: { en: 'Concertgebouw', nl: 'Concertgebouw' },
+                type: 'major', 
+                tags: ['network', 'good'], cost: 1000,
+                desc: { en: 'Cultural evening.', nl: 'Culturele avond.' }
             },
             { 
                 month: { en: 'November', nl: 'November' }, 
-                title: { en: 'Movember Awareness', nl: 'Movember Bewustwording' },
-                type: 'minor', category: { en: 'Minor Connect', nl: 'Kleine Connectie' },
-                tags: ['good'],
-                desc: { en: 'Awareness walk and fundraising initiative.', nl: 'Wandeling voor bewustwording en fondsenwerving.' }
-            },
-            { 
-                month: { en: 'November', nl: 'November' }, 
-                title: { en: 'Culture Night: Museum', nl: 'Cultuurnacht: Museum' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['upskill', 'network'],
-                desc: { en: 'Cultural broadening evening at Fabrique des Lumières.', nl: 'Culturele avond bij Fabrique des Lumières.' }
+                title: { en: 'Visit AON', nl: 'Bezoek AON' },
+                type: 'minor', 
+                tags: ['network', 'upskill'], cost: 350,
+                desc: { en: 'Broker/Risk management insights.', nl: 'Inzichten in makelaardij/risicobeheer.' }
             },
             { 
                 month: { en: 'December', nl: 'December' }, 
-                title: { en: 'End of Year Gala', nl: 'Eindejaarsgala' },
-                type: 'major', category: { en: 'Major Impact', nl: 'Grote Impact' },
-                tags: ['network', 'align'],
-                desc: { en: 'Formal closing dinner celebrating the year\'s achievements.', nl: 'Formeel diner om de prestaties van het jaar te vieren.' }
+                title: { en: 'Year End Dinner + Pubquiz', nl: 'Eindejaarsdiner + Pubquiz' },
+                type: 'major', 
+                tags: ['network', 'silos'], cost: 2500,
+                desc: { en: 'Celebrating 2026 achievements.', nl: 'Viering van de successen van 2026.' }
             }
         ];
 
         let currentLang = 'en';
         let currentFilter = 'all';
+        let currentTagFilter = null;
         let investmentChart = null;
 
         // --- APP LOGIC ---
@@ -358,7 +375,7 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             currentLang = toggle.checked ? 'nl' : 'en';
             
             updateStaticText();
-            renderEvents(currentFilter);
+            renderEvents(currentFilter, currentTagFilter);
             updateChart();
         }
 
@@ -397,12 +414,30 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             document.getElementById('btn-trip').innerText = i18n[currentLang].btn_trip;
         }
 
-        function renderEvents(filter = 'all') {
+        // Modified render function to support Tag filtering
+        function renderEvents(filter = 'all', tagFilter = null) {
             currentFilter = filter;
+            currentTagFilter = tagFilter;
+            
             const container = document.getElementById('event-grid');
             container.innerHTML = '';
 
-            const filtered = events.filter(e => filter === 'all' || e.type === filter);
+            let filtered = events;
+            
+            // Apply Type Filter
+            if (filter !== 'all') {
+                filtered = filtered.filter(e => e.type === filter);
+            }
+
+            // Apply Tag Filter (Interactivity)
+            if (tagFilter) {
+                filtered = filtered.filter(e => e.tags.includes(tagFilter));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-slate-400 py-10">No events found for this selection.</div>`;
+                return;
+            }
 
             filtered.forEach(event => {
                 let tagsHtml = '';
@@ -411,14 +446,15 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
                     tagsHtml += `<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full mr-1 mb-1 inline-block tag-${tag}">${tagLabel}</span>`;
                 });
 
+                // Removed the "Category" pill (e.g., 'Fun', 'Dev') as requested
                 const card = `
-                    <div class="bg-white rounded-lg shadow-sm border border-slate-100 p-5 hover:shadow-md transition-shadow">
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-100 p-5 hover:shadow-md transition-shadow relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-slate-800 text-white text-[10px] px-2 py-1 rounded-bl-lg font-mono">€${event.cost}</div>
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">${event.month[currentLang]}</span>
-                            <span class="text-[10px] font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded">${event.category[currentLang]}</span>
                         </div>
-                        <h4 class="font-bold text-slate-800 text-lg mb-1">${event.title[currentLang]}</h4>
-                        <p class="text-sm text-slate-500 mb-4 h-10 overflow-hidden">${event.desc[currentLang]}</p>
+                        <h4 class="font-bold text-slate-800 text-lg mb-1 leading-tight">${event.title[currentLang]}</h4>
+                        <p class="text-sm text-slate-500 mb-4">${event.desc[currentLang]}</p>
                         <div class="flex flex-wrap mt-auto">
                             ${tagsHtml}
                         </div>
@@ -429,8 +465,13 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
         }
 
         function filterEvents(type) {
+            // Reset tag filter when button filters are used
+            currentTagFilter = null; 
+            document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
+            
             renderEvents(type);
             
+            // Button Styles
             const buttons = document.querySelectorAll('#filters button');
             buttons.forEach(btn => {
                 btn.classList.remove('bg-slate-800', 'text-white');
@@ -446,16 +487,44 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
             }
         }
 
+        function filterByTag(tag, element) {
+            // Reset Type filter visually to "All" (logic follows)
+            document.querySelectorAll('#filters button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white');
+                btn.classList.add('bg-slate-200', 'text-slate-600');
+            });
+            document.getElementById('btn-all').classList.add('bg-slate-800', 'text-white');
+
+            // Handle toggle off if same card clicked
+            if (currentTagFilter === tag) {
+                currentTagFilter = null;
+                element.classList.remove('active');
+            } else {
+                // Clear other actives
+                document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
+                currentTagFilter = tag;
+                element.classList.add('active');
+            }
+
+            renderEvents('all', currentTagFilter);
+        }
+
         function initChart() {
             const ctx = document.getElementById('investmentChart').getContext('2d');
             Chart.defaults.font.family = "'Inter', sans-serif";
+            
+            // Data Logic:
+            // Trips: 20,000
+            // Major Events: 11,100 (remains same as VSAE is 0 cost)
+            // Network/Dev: 3,325
+            // Operational: 1,000
             
             investmentChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: i18n[currentLang].chart_labels,
                     datasets: [{
-                        data: [13500, 5100, 350, 1050],
+                        data: [20000, 11100, 3325, 1000], 
                         backgroundColor: ['#0f172a', '#3b82f6', '#94a3b8', '#e2e8f0'],
                         borderWidth: 0,
                         hoverOffset: 4
@@ -496,4 +565,3 @@ CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
     </script>
 </body>
 </html>
-
